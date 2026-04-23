@@ -1,0 +1,14 @@
+{
+  "Udupi_001": {
+    "branch_id": "Udupi_001",
+    "location": "Udupi Main Branch",
+    "available_services": ["deposit", "withdraw", "loan"],
+    "language_supported": ["kannada", "tulu", "english"]
+  },
+  "Mangalore_001": {
+    "branch_id": "Mangalore_001",
+    "location": "Mangalore Main Branch",
+    "available_services": ["deposit", "withdraw", "loan", "account_opening"],
+    "language_supported": ["kannada", "tulu", "english", "hindi"]
+  }
+}
