@@ -1,12 +1,8 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from urllib.parse import quote_plus
 
-# Encode password with special characters
-password = quote_plus("Naveen@nitte")
-
-# Database connection
-DATABASE_URL = f"postgresql://postgres:{password}@localhost:5432/banking_db"
+# Render PostgreSQL database
+DATABASE_URL = "postgresql://banking_db_pl3j_user:dRwzXCqlW3qu1K4ad1IfaE9wYZjUoM4Q@dpg-d7l51ngg4nts73fkg35g-a.oregon-postgres.render.com/banking_db_pl3j"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
@@ -24,8 +20,8 @@ def get_branch(branch_id: str):
         return {
             "branch_id": result[0],
             "location": result[1],
-            "available_services": result[2],
-            "language_supported": result[3]
+            "available_services": list(result[2]),
+            "language_supported": list(result[3])
         }
 
 def get_all_branches():
