@@ -1,12 +1,27 @@
 import uuid
-
-# In-memory session storage (simple for now)
-sessions = {}
+from sqlalchemy import text
+from database import SessionLocal
 
 def create_session(branch_id: str, location: str, services: list, languages: list):
     session_id = str(uuid.uuid4())
     
-    sessions[session_id] = {
+    with SessionLocal() as db:
+        db.execute(
+            text("""
+                INSERT INTO sessions (session_id, branch_id, language, state, mode)
+                VALUES (:session_id, :branch_id, :language, :state, :mode)
+            """),
+            {
+                "session_id": session_id,
+                "branch_id": branch_id,
+                "language": None,
+                "state": "LANGUAGE_SELECTION",
+                "mode": "2-way"
+            }
+        )
+        db.commit()
+    
+    return {
         "session_id": session_id,
         "branch_id": branch_id,
         "location": location,
@@ -16,22 +31,38 @@ def create_session(branch_id: str, location: str, services: list, languages: lis
         "state": "LANGUAGE_SELECTION",
         "mode": "2-way"
     }
-    
-    return sessions[session_id]
 
 def get_session(session_id: str):
-    if session_id not in sessions:
-        return None
-    return sessions[session_id]
+    with SessionLocal() as db:
+        result = db.execute(
+            text("SELECT * FROM sessions WHERE session_id = :session_id"),
+            {"session_id": session_id}
+        ).fetchone()
+        
+        if result is None:
+            return None
+            
+        return {
+            "session_id": result[0],
+            "branch_id": result[1],
+            "language": result[2],
+            "state": result[3],
+            "mode": result[4]
+        }
 
-def update_session(session_id: str, updates: dict):
-    if session_id not in sessions:
-        return None
-    sessions[session_id].update(updates)
-    return sessions[session_id]
-
-def delete_session(session_id: str):
-    if session_id in sessions:
-        del sessions[session_id]
-        return True
-    return False
+def update_session_language(session_id: str, language: str):
+    with SessionLocal() as db:
+        db.execute(
+            text("""
+                UPDATE sessions 
+                SET language = :language, state = :state
+                WHERE session_id = :session_id
+            """),
+            {
+                "session_id": session_id,
+                "language": language,
+                "state": "SERVICE_SELECTION"
+            }
+        )
+        db.commit()
+    return get_session(session_id)
