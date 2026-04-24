@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-# Render PostgreSQL database
 DATABASE_URL = "postgresql://banking_db_pl3j_user:dRwzXCqlW3qu1K4ad1IfaE9wYZjUoM4Q@dpg-d7l51ngg4nts73fkg35g-a.oregon-postgres.render.com/banking_db_pl3j"
 
 engine = create_engine(DATABASE_URL)
