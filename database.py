@@ -28,4 +28,12 @@ def get_all_branches():
         results = session.execute(
             text("SELECT * FROM branches")
         ).fetchall()
-        return results
+        return [
+            {
+                "branch_id": row[0],
+                "location": row[1],
+                "available_services": list(row[2]),
+                "language_supported": list(row[3])
+            }
+            for row in results
+        ]
